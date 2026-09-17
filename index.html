@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>چقدر گشنته؟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBF1DE;
+    --bg-elevated: #FFFFFF;
+    --bg-sunken: #F3E5C7;
+    --text: #2E1A12;
+    --text-muted: #8A6A4C;
+    --accent: #C98A2C;
+    --accent-strong: #A63446;
+    --border: #E8D8B4;
+    --track: #EADFC2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #211710;
+      --bg-elevated: #2B1F17;
+      --bg-sunken: #1A1109;
+      --text: #F5E6D3;
+      --text-muted: #C9AE8C;
+      --accent: #E8B34D;
+      --accent-strong: #E0637A;
+      --border: #40291D;
+      --track: #3A2919;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #211710;
+    --bg-elevated: #2B1F17;
+    --bg-sunken: #1A1109;
+    --text: #F5E6D3;
+    --text-muted: #C9AE8C;
+    --accent: #E8B34D;
+    --accent-strong: #E0637A;
+    --border: #40291D;
+    --track: #3A2919;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
+  }
+  header.top { padding-bottom: 1.25rem; }
+  .kicker { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 0.35rem; }
+  h1 { font-size: 2rem; font-weight: 800; margin: 0 0 0.6rem; letter-spacing: -0.01em; }
+  .lede { color: var(--text-muted); font-size: 0.98rem; margin: 0; max-width: 34ch; }
+  .privacy-note {
+    display: inline-block; margin-top: 0.9rem; font-size: 0.8rem; color: var(--text-muted);
+    background: var(--bg-sunken); border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.8rem;
+  }
+
+  section.q { margin-top: 2.1rem; }
+  section.q .label { font-size: 1.05rem; font-weight: 700; margin: 0 0 0.9rem; }
+  section.q .sublabel { font-size: 0.85rem; color: var(--text-muted); margin: -0.6rem 0 0.9rem; }
+
+  .hero-slider {
+    background: linear-gradient(180deg, var(--bg-elevated), var(--bg-sunken));
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 1.5rem 1.35rem 1.65rem;
+  }
+  .hero-slider .big-number {
+    font-size: 4rem; font-weight: 800; line-height: 1; color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-slider .desc { font-size: 1.02rem; font-weight: 600; margin-top: 0.3rem; min-height: 1.5em; }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 8px;
+    border-radius: 999px; background: var(--track); margin-top: 1.1rem; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); border: 3px solid var(--bg-elevated);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25); cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+    border: 3px solid var(--bg-elevated); box-shadow: 0 1px 4px rgba(0,0,0,0.25); cursor: pointer;
+  }
+  input[type=range]:focus-visible { box-shadow: 0 0 0 3px var(--accent); border-radius: 999px; }
+  .scale-ends { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+  .slider-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 18px; padding: 1.1rem 1.2rem 1.3rem; }
+  .slider-card .desc { font-weight: 600; font-size: 0.98rem; color: var(--accent-strong); min-height: 1.4em; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+  .chip {
+    font-family: inherit; font-size: 0.88rem; color: var(--text);
+    background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 999px;
+    padding: 0.55rem 0.95rem; cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: #241304; font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .chip { transition: none; } }
+
+  .free-text {
+    width: 100%; margin-top: 0.8rem; padding: 0.75rem 0.9rem; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text);
+    font-family: inherit; font-size: 0.92rem; resize: vertical; min-height: 2.6rem;
+  }
+  .free-text:focus-visible { outline: 2px solid var(--accent); }
+
+  .btn-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .submit-btn {
+    width: 100%; margin-top: 2.4rem; padding: 1rem; border: none; border-radius: 16px;
+    background: var(--accent-strong); color: #FFF4EC; font-family: inherit;
+    font-size: 1.05rem; font-weight: 700; cursor: pointer;
+  }
+  .submit-btn:active { transform: scale(0.99); }
+
+  .text-link-btn {
+    display: inline-block; margin-top: 0.9rem; font-size: 0.82rem; color: var(--text-muted);
+    background: none; border: none; font-family: inherit; text-decoration: underline;
+    cursor: pointer; padding: 0;
+  }
+
+  #result {
+    display: none; margin-top: 2.2rem; background: var(--bg-elevated);
+    border: 1px solid var(--border); border-radius: 20px; padding: 1.4rem 1.3rem;
+  }
+  #result .badge {
+    display: inline-flex; align-items: baseline; gap: 0.4rem; padding: 0.5rem 1rem;
+    border-radius: 999px; color: #FFF8EF; font-weight: 700;
+  }
+  #result .badge .num { font-size: 1.4rem; }
+
+  .insight { background: var(--bg-sunken); border-radius: 14px; padding: 0.95rem 1.05rem; margin-top: 1.1rem; }
+  .insight .status { font-weight: 700; margin-bottom: 0.4rem; }
+  .insight .advice { color: var(--text-muted); font-size: 0.93rem; }
+  .disclaimer { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.7rem; }
+
+  #result .recap { margin-top: 1.1rem; font-size: 0.92rem; color: var(--text-muted); }
+  #result .recap div { margin-top: 0.35rem; }
+  #result .recap b { color: var(--text); font-weight: 600; }
+  .copy-btn {
+    margin-top: 1.1rem; background: transparent; border: 1px solid var(--border); color: var(--text);
+    font-family: inherit; font-size: 0.88rem; padding: 0.6rem 1rem; border-radius: 12px; cursor: pointer;
+  }
+  .copy-btn:active { transform: scale(0.99); }
+  .copy-fallback {
+    width: 100%; margin-top: 0.7rem; padding: 0.7rem; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--bg-sunken); color: var(--text); font-family: inherit; font-size: 0.85rem; min-height: 4.5rem;
+  }
+
+  #history-wrap { margin-top: 2.6rem; }
+  #history-wrap h2 { font-size: 1.02rem; font-weight: 700; margin: 0 0 0.9rem; }
+  .empty-hint { color: var(--text-muted); font-size: 0.88rem; }
+  .trend { display: flex; align-items: flex-end; gap: 0.4rem; height: 64px; margin-bottom: 1.2rem; padding: 0 0.1rem; }
+  .trend .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 0.25rem; }
+  .trend .bar { width: 100%; max-width: 26px; border-radius: 5px 5px 2px 2px; min-height: 4px; }
+  .trend .bar-label { font-size: 0.62rem; color: var(--text-muted); }
+
+  .history-item { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.8rem 0; border-top: 1px solid var(--border); }
+  .history-item:first-of-type { border-top: none; }
+  .history-item .meta { font-size: 0.82rem; color: var(--text-muted); }
+  .history-item .craving-mini { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+  .history-badge {
+    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    width: 2.4rem; height: 2.4rem; border-radius: 50%; color: #FFF8EF; font-weight: 700; font-size: 0.95rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="kicker">چک-این روزانه</p>
+    <h1>چقدر گشنته؟</h1>
+    <p class="lede">پنج تا سؤال کوتاه، هر روز، تا دقیق بدونی چقدر گشنته، دلت چی می‌خواد، از کی این حسو داری، و چقدر می‌تونی صبر کنی.</p>
+    <span class="privacy-note">فقط روی همین گوشی ذخیره می‌شه، جایی فرستاده نمی‌شه.</span>
+  </header>
+
+  <section class="q">
+    <p class="label">الان چقدر گشنته؟</p>
+    <div class="hero-slider">
+      <div class="big-number" id="hungerNum">5</div>
+      <div class="desc" id="hungerDesc">گشنمه، آماده‌ی غذام</div>
+      <input type="range" id="hungerSlider" min="0" max="10" value="5" step="1" aria-label="شدت گشنگی">
+      <div class="scale-ends"><span>اصلاً گشنه نیستم</span><span>دیگه نمی‌تونم فکر کنم</span></div>
+    </div>
+  </section>
+
+  <section class="q">
+    <p class="label">چقدر دلت می‌خواد همین الان چیزی بخوری؟</p>
+    <p class="sublabel">این با گشنگی بدنی فرق داره؛ گاهی سیریم ولی بازم دلمون یه چیزی می‌خواد.</p>
+    <div class="slider-card">
+      <div class="desc" id="desireDesc">یه‌کم دلم می‌خواد</div>
+      <input type="range" id="desireSlider" min="0" max="10" value="5" step="1" aria-label="میل به خوردن">
+      <div class="scale-ends"><span>هیچ میلی ندارم</span><span>به هیچ‌چیز دیگه فکر نمی‌کنم</span></div>
+    </div>
+  </section>
+
+  <section class="q">
+    <p class="label">دلت چی می‌خواد؟</p>
+    <p class="sublabel">هرچی که الان میلشو داری رو انتخاب کن، می‌تونی چندتا بزنی.</p>
+    <div class="chips" id="cravingChips">
+      <button type="button" class="chip" data-value="شیرین">شیرین (شکلات، بستنی، شیرینی)</button>
+      <button type="button" class="chip" data-value="شور">شور (چیپس، آجیل، پنیر)</button>
+      <button type="button" class="chip" data-value="ترش">ترش (ترشی، آبلیمو، ماست)</button>
+      <button type="button" class="chip" data-value="تند">تند و ادویه‌دار (فلفل، غذای تند)</button>
+      <button type="button" class="chip" data-value="چرب">چرب و سنگین (فست‌فود، کباب)</button>
+      <button type="button" class="chip" data-value="تازه">تازه و سبک (میوه، سبزی، سالاد)</button>
+      <button type="button" class="chip" data-value="داغ">گرم و داغ (سوپ، آش، چای)</button>
+      <button type="button" class="chip" data-value="خنک">سرد و خنک (بستنی، نوشیدنی خنک)</button>
+      <button type="button" class="chip" data-value="نامشخص">نمی‌دونم، فقط یه چیزی می‌خوام</button>
+    </div>
+    <textarea class="free-text" id="cravingNote" placeholder="چیز خاصی مدنظرته؟ (اختیاری)"></textarea>
+  </section>
+
+  <section class="q">
+    <p class="label">از کی این حس رو داری؟</p>
+    <div class="btn-group" id="durationGroup">
+      <button type="button" class="chip" data-value="کمتر از ۳۰ دقیقه">کمتر از ۳۰ دقیقه</button>
+      <button type="button" class="chip" data-value="۳۰ دقیقه تا ۱ ساعت">۳۰ دقیقه تا ۱ ساعت</button>
+      <button type="button" class="chip" data-value="۱ تا ۲ ساعت">۱ تا ۲ ساعت</button>
+      <button type="button" class="chip" data-value="۲ تا ۴ ساعت">۲ تا ۴ ساعت</button>
+      <button type="button" class="chip" data-value="بیشتر از ۴ ساعت">بیشتر از ۴ ساعت</button>
+      <button type="button" class="chip" data-value="نمی‌دونم دقیق">نمی‌دونم دقیق</button>
+    </div>
+    <p class="sublabel" style="margin-top:1rem;">چطور شروع شد؟</p>
+    <div class="btn-group" id="patternGroup">
+      <button type="button" class="chip" data-value="یهو زد">یهو زد</button>
+      <button type="button" class="chip" data-value="کم‌کم زیاد شد">کم‌کم زیاد شد</button>
+      <button type="button" class="chip" data-value="نمی‌دونم">نمی‌دونم</button>
+    </div>
+  </section>
+
+  <section class="q">
+    <p class="label">چقدر می‌تونی تحمل کنی؟</p>
+    <div class="slider-card">
+      <div class="desc" id="toleranceDesc">می‌تونم یه‌مدت صبر کنم</div>
+      <input type="range" id="toleranceSlider" min="0" max="10" value="5" step="1" aria-label="ظرفیت تحمل">
+      <div class="scale-ends"><span>هر چقدر لازم باشه صبر می‌کنم</span><span>باید همین الان بخورم</span></div>
+    </div>
+    <p class="sublabel" style="margin-top:1.1rem;">واقعاً چقدر دیگه می‌تونی صبر کنی؟</p>
+    <div class="btn-group" id="waitGroup">
+      <button type="button" class="chip" data-value="همین الان">همین الان</button>
+      <button type="button" class="chip" data-value="تا ۱۵ دقیقه">تا ۱۵ دقیقه</button>
+      <button type="button" class="chip" data-value="تا نیم ساعت">تا نیم ساعت</button>
+      <button type="button" class="chip" data-value="تا یک ساعت">تا یک ساعت</button>
+      <button type="button" class="chip" data-value="بیشتر از یک ساعت">بیشتر از یک ساعت</button>
+      <button type="button" class="chip" data-value="فرقی نداره">فرقی نداره</button>
+    </div>
+  </section>
+
+  <section class="q">
+    <p class="label">این گشنگی بیشتر از کجا میاد؟</p>
+    <p class="sublabel">اختیاریه، ولی کمک می‌کنه بعداً الگوشو بهتر بشناسیم.</p>
+    <div class="btn-group" id="triggerGroup">
+      <button type="button" class="chip" data-value="گشنگی واقعی بدنم">گشنگی واقعی بدنم</button>
+      <button type="button" class="chip" data-value="بوی غذا یا دیدنش">بوی غذا یا دیدنش</button>
+      <button type="button" class="chip" data-value="حال و هوام">حال و هوام (خسته‌ام، ناراحتم، استرس دارم)</button>
+      <button type="button" class="chip" data-value="فقط عادت زمانیه">فقط چون الان وقتشه</button>
+      <button type="button" class="chip" data-value="نمی‌دونم">نمی‌دونم</button>
+    </div>
+  </section>
+
+  <button type="button" class="submit-btn" id="submitBtn">ثبت کن</button>
+  <button type="button" class="text-link-btn" id="resetFormBtn">پاک کردن انتخاب‌ها و شروع دوباره</button>
+
+  <div id="result"></div>
+
+  <div id="history-wrap">
+    <h2>چک-این‌های قبلی</h2>
+    <div id="historyContent"><p class="empty-hint">هنوز چیزی ثبت نشده.</p></div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var STORAGE_KEY = 'hunger_checkin_entries_v1';
+
+  var hungerLabels = [
+    'اصلاً گشنه نیستم', 'اصلاً گشنه نیستم', 'سیرم، میلی به غذا ندارم',
+    'نه گشنه‌ام نه سیر', 'تازه اولین نشونه‌های گشنگی رو حس می‌کنم',
+    'گشنمه، آماده‌ی غذام', 'خیلی گشنمه', 'شدیداً گشنمه، شکمم صدا می‌کنه',
+    'خیلی شدید، بی‌طاقت شدم', 'به‌شدت گشنه‌ام، ضعف دارم',
+    'دیگه نمی‌تونم فکر کنم، فقط غذا می‌خوام'
+  ];
+  var desireLabels = [
+    'هیچ میلی ندارم', 'میل خیلی کمی دارم', 'میل کمی دارم', 'یه‌کم دلم می‌خواد',
+    'دلم می‌خواد', 'دلم می‌خواد', 'خیلی دلم می‌خواد', 'خیلی دلم می‌خواد',
+    'شدیداً دلم می‌خواد', 'شدیداً دلم می‌خواد', 'به هیچ‌چیز دیگه فکر نمی‌کنم'
+  ];
+  var toleranceLabels = [
+    'هر چقدر لازم باشه صبر می‌کنم', 'راحت می‌تونم صبر کنم', 'راحت می‌تونم صبر کنم',
+    'می‌تونم یه‌مدت صبر کنم', 'می‌تونم یه‌مدت صبر کنم', 'صبر کردن داره سخت می‌شه',
+    'صبر کردن سخت شده', 'خیلی سخته صبر کنم', 'خیلی سخته صبر کنم',
+    'تقریباً دیگه نمی‌تونم', 'باید همین الان بخورم'
+  ];
+
+  var state = { craving: [], duration: null, pattern: null, wait: null, trigger: null };
+
+  function byId(id) { return document.getElementById(id); }
+
+  function setupSlider(sliderId, descId, labels) {
+    var slider = byId(sliderId), desc = byId(descId);
+    function render() {
+      var v = parseInt(slider.value, 10);
+      desc.textContent = labels[v];
+      if (sliderId === 'hungerSlider') { byId('hungerNum').textContent = v; }
+    }
+    slider.addEventListener('input', render);
+    render();
+  }
+  setupSlider('hungerSlider', 'hungerDesc', hungerLabels);
+  setupSlider('desireSlider', 'desireDesc', desireLabels);
+  setupSlider('toleranceSlider', 'toleranceDesc', toleranceLabels);
+
+  function setupMultiChips(containerId, arr) {
+    var container = byId(containerId);
+    container.querySelectorAll('.chip').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var v = btn.getAttribute('data-value');
+        var idx = arr.indexOf(v);
+        if (idx === -1) { arr.push(v); btn.classList.add('active'); }
+        else { arr.splice(idx, 1); btn.classList.remove('active'); }
+      });
+    });
+  }
+  setupMultiChips('cravingChips', state.craving);
+
+  function setupSingleChips(containerId, key) {
+    var container = byId(containerId);
+    var btns = container.querySelectorAll('.chip');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        btns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        state[key] = btn.getAttribute('data-value');
+      });
+    });
+  }
+  setupSingleChips('durationGroup', 'duration');
+  setupSingleChips('patternGroup', 'pattern');
+  setupSingleChips('waitGroup', 'wait');
+  setupSingleChips('triggerGroup', 'trigger');
+
+  function scoreColor(score) {
+    var hue = 130 - (score / 10) * 130;
+    return 'hsl(' + hue.toFixed(0) + 'deg 62% 42%)';
+  }
+
+  function urgencyText(score) {
+    if (score <= 2) return 'آرومه، عجله‌ای نیست';
+    if (score <= 4) return 'یه‌کم گشنه‌س';
+    if (score <= 6) return 'گشنه‌س، بد نیست بهش برسی';
+    if (score <= 8) return 'خیلی گشنه‌س، زودتر یه کاری کن';
+    return 'فوریه! همین الان باید یه چیزی بخوره';
+  }
+
+  function craveListText(entry) {
+    var list = entry.craving.filter(function (c) { return c !== 'نامشخص'; });
+    var text = list.join('، ');
+    if (entry.cravingNote) { text = text ? (text + '، ' + entry.cravingNote) : entry.cravingNote; }
+    return text;
+  }
+
+  function insightFor(entry) {
+    var hasSpecific = entry.craving.some(function (c) { return c !== 'نامشخص'; }) || !!entry.cravingNote;
+    var cList = craveListText(entry);
+    var longDuration = (entry.duration === '۲ تا ۴ ساعت' || entry.duration === 'بیشتر از ۴ ساعت');
+    var isUrgent = (entry.tolerance >= 8 || entry.wait === 'همین الان');
+
+    if (entry.trigger === 'حال و هوام') {
+      return {
+        status: 'به‌نظر می‌رسه این میل بیشتر از حال‌وهواته تا گشنگی واقعی بدنت.',
+        advice: 'خوردن شاید کمی آرومت کنه، ولی طبق تحقیقات مربوط به خوردن هیجانی، حس اصلی رو حل نمی‌کنه. بهتره اول ببینی دقیقاً چه احساسی پشتشه؛ اگه بعدش هم دلت غذا خواست، یه چیز کوچیک و لذت‌بخش کافیه' + (hasSpecific ? (' (مثلاً ' + cList + ').') : '.')
+      };
+    }
+
+    if (entry.trigger === 'بوی غذا یا دیدنش' && entry.hunger <= 5) {
+      return {
+        status: 'این بیشتر شبیه واکنش به بو یا دیدن غذاست تا گشنگی واقعی بدنت.',
+        advice: 'این‌جور میل‌ها معمولاً خودشون کم می‌شن. اگه بازم دلت خواست، یه مقدار کم' + (hasSpecific ? (' از ' + cList) : '') + ' کافیه، نیازی به وعده‌ی کامل نیست.'
+      };
+    }
+
+    if (entry.hunger <= 3 && entry.desire >= 6) {
+      return {
+        status: 'بدنت زیاد گشنه نیست، ولی ذهنت میل داره — این با گشنگی واقعی فرق داره.',
+        advice: hasSpecific
+          ? ('طبق «سیری حسی-اختصاصی» در پژوهش‌های تغذیه، یه مقدار کم از دقیقاً همون چیزی که میل داری (' + cList + ') بهتر از یه وعده‌ی کامل از یه چیز دیگه جواب می‌ده.')
+          : 'یه مقدار کم از هرچی الان بیشتر از همه به ذهنت میاد رو امتحان کن؛ نیازی به وعده‌ی کامل نیست.'
+      };
+    }
+
+    if (entry.hunger >= 6) {
+      var advice = 'بهتره زودتر یه غذای کامل بخوری؛ غذاهای پروتئین‌دار یا فیبردار (تخم‌مرغ، حبوبات، غذای کامل) نسبت به شیرینی یا فست‌فود سیرکننده‌تر و پایدارترن.';
+      if (longDuration) {
+        advice += ' چند ساعته چیزی نخوردی، و پژوهش‌ها افت قندخون طولانی‌مدت رو به بی‌حوصلگی و زودعصبانی‌شدن ربط دادن؛ هرچه زودتر بهش برسی، هم حالت بهتر می‌شه هم اعصابت.';
+      }
+      if (isUrgent) {
+        advice += ' چون گفتی دیگه نمی‌تونی زیاد صبر کنی، الان سرعت از انتخاب ایده‌آل مهم‌تره — هرچی زودتر در دسترسه رو بخور.';
+      }
+      if (hasSpecific) {
+        advice += ' اگه دلت طعم خاصی هم می‌خواد (' + cList + ')، همونو هم کنار وعده‌ت داشته باش.';
+      }
+      return { status: 'بدنت واقعاً مدتیه غذا نخورده و شدت گشنگیت بالاست.', advice: advice };
+    }
+
+    if (entry.hunger <= 3 && entry.desire <= 3 && entry.tolerance <= 3) {
+      return { status: 'همه‌چیز آرومه، نه گشنگی خاصی هست نه فشاری.', advice: 'فعلاً نیازی به کاری نیست.' };
+    }
+
+    return {
+      status: 'وضعیت گشنگیت متوسطه، نه اورژانسیه نه کاملاً آروم.',
+      advice: 'یه میان‌وعده‌ی سبک (میوه، آجیل، ماست) احتمالاً تا وعده‌ی بعدی کافیه' + (hasSpecific ? ('، ترجیحاً از جنس ' + cList + '.') : '.')
+    };
+  }
+
+  function loadEntries() {
+    try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+    catch (e) { return []; }
+  }
+  function saveEntries(entries) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+    catch (e) { console.error('ذخیره‌سازی انجام نشد', e); }
+  }
+
+  function formatDate(ts) {
+    try {
+      var d = new Date(ts);
+      var day = d.toLocaleDateString('fa-IR', { weekday: 'long', day: 'numeric', month: 'long' });
+      var time = d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+      return day + '، ساعت ' + time;
+    } catch (e) { return ''; }
+  }
+
+  function renderHistory() {
+    var entries = loadEntries();
+    var content = byId('historyContent');
+    if (entries.length === 0) {
+      content.innerHTML = '<p class="empty-hint">هنوز چیزی ثبت نشده.</p>';
+      return;
+    }
+    var recent = entries.slice(-7);
+    var trendHtml = '<div class="trend">' + recent.map(function (e) {
+      var h = Math.max(6, (e.urgency / 10) * 64);
+      var d = new Date(e.ts);
+      var lbl = d.toLocaleDateString('fa-IR', { day: 'numeric', month: 'numeric' });
+      return '<div class="bar-col"><div class="bar" style="height:' + h.toFixed(0) + 'px; background:' + scoreColor(e.urgency) + ';"></div><div class="bar-label">' + lbl + '</div></div>';
+    }).join('') + '</div>';
+
+    var listHtml = entries.slice().reverse().slice(0, 7).map(function (e) {
+      var cravingMini = e.craving && e.craving.length ? e.craving.join('، ') : 'ثبت نشده';
+      return '<div class="history-item">' +
+        '<div><div class="meta">' + formatDate(e.ts) + '</div>' +
+        '<div class="craving-mini">میل به: ' + cravingMini + '</div></div>' +
+        '<div class="history-badge" style="background:' + scoreColor(e.urgency) + ';">' + e.urgency + '</div>' +
+        '</div>';
+    }).join('');
+
+    content.innerHTML = trendHtml + listHtml;
+  }
+  renderHistory();
+
+  function resetForm() {
+    byId('hungerSlider').value = 5; byId('hungerSlider').dispatchEvent(new Event('input'));
+    byId('desireSlider').value = 5; byId('desireSlider').dispatchEvent(new Event('input'));
+    byId('toleranceSlider').value = 5; byId('toleranceSlider').dispatchEvent(new Event('input'));
+    byId('cravingNote').value = '';
+    ['cravingChips', 'durationGroup', 'patternGroup', 'waitGroup', 'triggerGroup'].forEach(function (id) {
+      byId(id).querySelectorAll('.chip.active').forEach(function (b) { b.classList.remove('active'); });
+    });
+    state.craving = []; state.duration = null; state.pattern = null; state.wait = null; state.trigger = null;
+  }
+  byId('resetFormBtn').addEventListener('click', resetForm);
+
+  function copyText(text, btn) {
+    var done = function () {
+      btn.textContent = 'کپی شد ✓';
+      setTimeout(function () { btn.textContent = 'کپی خلاصه برای فرستادن'; }, 1800);
+    };
+    var fail = function () {
+      var existing = byId('copyFallback');
+      if (existing) { existing.remove(); }
+      var ta = document.createElement('textarea');
+      ta.id = 'copyFallback';
+      ta.className = 'copy-fallback';
+      ta.readOnly = true;
+      ta.value = text;
+      btn.insertAdjacentElement('afterend', ta);
+      ta.focus();
+      ta.select();
+      btn.textContent = 'کپی خودکار نشد، متن رو دستی انتخاب و کپی کن';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (ok) { done(); } else { fail(); }
+      } catch (e) { fail(); }
+    }
+  }
+
+  byId('submitBtn').addEventListener('click', function () {
+    var hunger = parseInt(byId('hungerSlider').value, 10);
+    var desire = parseInt(byId('desireSlider').value, 10);
+    var tolerance = parseInt(byId('toleranceSlider').value, 10);
+    var cravingNote = byId('cravingNote').value.trim();
+
+    var urgency = Math.round(hunger * 0.35 + desire * 0.25 + tolerance * 0.40);
+    urgency = Math.max(0, Math.min(10, urgency));
+
+    var entry = {
+      ts: Date.now(), hunger: hunger, desire: desire, tolerance: tolerance,
+      craving: state.craving.slice(), cravingNote: cravingNote,
+      duration: state.duration, pattern: state.pattern, wait: state.wait, trigger: state.trigger,
+      urgency: urgency
+    };
+
+    var entries = loadEntries();
+    entries.push(entry);
+    saveEntries(entries);
+    renderHistory();
+
+    var cravingText = entry.craving.length ? entry.craving.join('، ') : '—';
+    if (cravingNote) { cravingText += (entry.craving.length ? ' + ' : '') + cravingNote; }
+    var ins = insightFor(entry);
+
+    var resultEl = byId('result');
+    resultEl.innerHTML =
+      '<span class="badge" style="background:' + scoreColor(urgency) + ';">' +
+      '<span class="num">' + urgency + '</span><span>از ۱۰ — ' + urgencyText(urgency) + '</span></span>' +
+      '<div class="insight"><div class="status">' + ins.status + '</div><div class="advice">' + ins.advice + '</div></div>' +
+      '<div class="recap">' +
+      '<div><b>میل غذایی:</b> ' + cravingText + '</div>' +
+      '<div><b>از کی:</b> ' + (entry.duration || '—') + (entry.pattern ? ' (' + entry.pattern + ')' : '') + '</div>' +
+      '<div><b>تحمل:</b> ' + toleranceLabels[tolerance] + (entry.wait ? '، تخمین: ' + entry.wait : '') + '</div>' +
+      (entry.trigger ? '<div><b>منشأ:</b> ' + entry.trigger + '</div>' : '') +
+      '</div>' +
+      '<div class="disclaimer">این پیشنهادها بر پایه‌ی یافته‌های عمومی تغذیه و روان‌شناسی خوردنه، نه توصیه‌ی پزشکی شخصی.</div>' +
+      '<button type="button" class="copy-btn" id="copyBtn">کپی خلاصه برای فرستادن</button>';
+
+    resultEl.style.display = 'block';
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    byId('copyBtn').addEventListener('click', function () {
+      var text = 'الان ' + urgency + ' از ۱۰ گشنمه (' + urgencyText(urgency) + ').\n' +
+        ins.status + ' ' + ins.advice + '\n' +
+        'میل غذایی: ' + cravingText + '\n' +
+        'از کی: ' + (entry.duration || 'نامشخص') + (entry.pattern ? '، ' + entry.pattern : '') + '\n' +
+        'تحمل: ' + toleranceLabels[tolerance] + (entry.wait ? '، ' + entry.wait : '');
+      copyText(text, byId('copyBtn'));
+    });
+
+    resetForm();
+  });
+
+  var clearArmed = false, clearTimer = null;
+  var clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.className = 'text-link-btn';
+  clearBtn.textContent = 'پاک‌کردن کل تاریخچه';
+  clearBtn.addEventListener('click', function () {
+    if (!clearArmed) {
+      clearArmed = true;
+      clearBtn.textContent = 'مطمئنی؟ دوباره بزن تا کل تاریخچه پاک بشه';
+      clearTimer = setTimeout(function () {
+        clearArmed = false;
+        clearBtn.textContent = 'پاک‌کردن کل تاریخچه';
+      }, 4000);
+      return;
+    }
+    clearTimeout(clearTimer);
+    clearArmed = false;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    clearBtn.textContent = 'پاک‌کردن کل تاریخچه';
+    renderHistory();
+  });
+  byId('history-wrap').appendChild(clearBtn);
+})();
+</script>
+</body>
+</html>
